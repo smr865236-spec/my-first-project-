@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجة الطلاب</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f7f6; margin-top: 50px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; min-width: 300px; }
+        input { padding: 10px; width: 80%; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; text-align: center; font-size: 16px; }
+        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .result { margin-top: 20px; font-size: 18px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>الاستعلام عن النتيجة</h2>
+    <p>برجاء إدخال الكود الخاص بك:</p>
+    <input type="text" id="studentCode" placeholder="اكتب كود الطالب هنا">
+    <br>
+    <button onclick="checkResult()">عرض النتيجة</button>
+    <div id="resultBox" class="result"></div>
+</div>
+
+<script>
+    let database = {};
+
+    // قراءة ملف الـ CSV اللي أنت رفعته باسم "نتيجه الطلاب 2026 - الورقة 1.csv"
+    fetch('نتيجه الطلاب 2026 - الورقة 1.csv')
+        .then(response => response.text())
+        .then(text => {
+            let lines = text.split('\n');
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                let cols = lines[i].split(',');
+                let code = cols[0].trim(); // العمود الأول: الكود
+                let name = cols[1] ? cols[1].trim() : ''; // العمود الثاني: الاسم
+                let score = cols[2] ? cols[2].trim() : ''; // العمود الثالث: النتيجة
+                
+                database[code] = { name: name, score: score };
+            }
+        }).catch(err => console.error("خطأ في تحميل ملف البيانات:", err));
+
+    function checkResult() {
+        const code = document.getElementById("studentCode").value.trim();
+        const resultBox = document.getElementById("resultBox");
+
+        if (database[code]) {
+            resultBox.innerHTML = `الطالب: ${database[code].name} <br> النتيجة: <span style="color: green;">${database[code].score}</span>`;
+        } else {
+            resultBox.innerHTML = `<span style="color: red;">عذراً، هذا الكود غير صحيح أو غير مسجل!</span>`;
+        }
+    }
+</script>
+
+</body>
+</html>
