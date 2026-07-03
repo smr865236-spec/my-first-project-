@@ -28,7 +28,7 @@
     let database = {};
 
     // قراءة ملف الـ CSV اللي أنت رفعته باسم "نتيجه الطلاب 2026 - الورقة 1.csv"
-    fetch('نتيجه الطلاب 2026 - الورقة 1.csv')
+    fetch('data.csv')
         .then(response => response.text())
         .then(text => {
             let lines = text.split('\n');
